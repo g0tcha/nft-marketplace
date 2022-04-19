@@ -1,14 +1,14 @@
 import axios from "axios";
-import { ethers } from "hardhat";
+import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Web3Modal from 'web3modal'
 
 import { marketplaceAddress } from '../config'
-import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol'
+import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketplace.json'
 
 export default function ResellNFT() {
-    const [formInput, setFormInput] = useState({ price: '', image: '' })
+    const [formInput, updateFormInput] = useState({ price: '', image: '' })
     const router = useRouter()
     const { id, tokenURI } = router.query
     const { image, price } = formInput
@@ -25,7 +25,7 @@ export default function ResellNFT() {
 
     async function listNFTForSale() {
         if (!price) return
-        const web3Modal = Web3Modal()
+        const web3Modal = new Web3Modal()
         const connection = await web3Modal.connect()
         const provider = new ethers.providers.Web3Provider(connection)
         const signer = provider.getSigner()
@@ -54,7 +54,7 @@ export default function ResellNFT() {
                         <img src={image} width="350" className="rounded mt-4" />
                     )
                 }
-                <button className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-bg">List NFT</button>
+                <button onClick={listNFTForSale} className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-bg">List NFT</button>
             </div>
         </div>
     )

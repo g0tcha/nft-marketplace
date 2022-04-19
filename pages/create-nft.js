@@ -1,7 +1,8 @@
-import { useRouter } from "next/router"
+import { useState } from 'react'
+import { ethers } from 'ethers'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
+import { useRouter } from 'next/router'
 import Web3Modal from 'web3modal'
-import { ethers } from "hardhat"
 
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
@@ -18,7 +19,7 @@ export default function CreateItem() {
         const file = e.target.files[0]
         try {
             const added = await client.add(file, {
-                progress: (prog) => console.log('received: ${prog}')
+                progress: (prog) => console.log(`received: ${prog}`)
             })
             const url = `https://ipfs.infura.io/ipfs/${added.path}`
             setFileUrl(url)
@@ -45,7 +46,7 @@ export default function CreateItem() {
     async function listNFTForSale() {
         const url = await uploadToIPFS()
         const web3Modal = new Web3Modal()
-        const connection = await web3Modal().connect()
+        const connection = await web3Modal.connect()
         const provider = new ethers.providers.Web3Provider(connection)
         const signer = provider.getSigner()
 
